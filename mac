@@ -169,6 +169,9 @@ cob = !"git branch -l --format '%(refname:short)' --sort=-committerdate | fzf --
   trustctime = false
   excludesfile = ~/.config/git/ignore
 
+[diff "rails_credentials"]
+  textconv = bin/rails credentials:diff
+
 [delta]
   navigate = true
   side-by-side = true
