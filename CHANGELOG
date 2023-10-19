@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 * Configures AWS credentials
 * Generates the Relay SSH config
+* Configures `diff.rails_credential` for git to diff encrypted rails credential files
 
 ## 2023-03-01 - Relay Fork
 
@@ -43,4 +44,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * [Ignore shellcheck warning SC3043 globally](https://github.com/thoughtbot/laptop/pull/606)
 * [Use gpg-suite-no-mail](https://github.com/thoughtbot/laptop/pull/607)
 * [Update ctags installation command](https://github.com/thoughtbot/laptop/pull/586)
-
