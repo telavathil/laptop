@@ -105,6 +105,7 @@ Programming languages, package managers, and configuration:
 * [Bundler] for managing Ruby libraries
 * [Node.js] and [npm], for running apps and installing JavaScript packages
 * [Ruby] stable for writing general-purpose code
+* [transcrypt][] for encrypting files in git
 
 [Bundler]: http://bundler.io/
 [ImageMagick]: http://www.imagemagick.org/
@@ -112,6 +113,7 @@ Programming languages, package managers, and configuration:
 [npm]: https://www.npmjs.org/
 [asdf-vm]: https://github.com/asdf-vm/asdf
 [Ruby]: https://www.ruby-lang.org/en/
+[transcrypt]: https://github.com/elasticdog/transcrypt
 
 Databases:
 
