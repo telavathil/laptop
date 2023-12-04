@@ -340,7 +340,8 @@ brew "imagemagick"
 # Fonts
 cask "font-inconsolata-nerd-font"
 
-# AWS session manager plugin
+# Infra related tooling
+brew "transcrypt"
 cask "session-manager-plugin"
 
 # Programming language prerequisites and package managers
