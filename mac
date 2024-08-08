@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# Welcome to the Relay laptop script!
+# Welcome to Tobin's laptop script, dirived from the Relay Laptop script!
 # Be prepared to turn your laptop (or desktop, no haters here)
 # into an awesome development machine.
 
 # Thanks Thoughtbot for the initial work
 
 # shellcheck disable=SC3043
+# shellcheck disable=SC2046
 
 SECTIONS=$*
 if [[ -z "$SECTIONS" ]]; then
@@ -161,9 +162,6 @@ cob = !"git branch -l --format '%(refname:short)' --sort=-committerdate | fzf --
 [url "git@github.com:"]
   insteadOf = gh:
 
-[url "git@github.com:relayplatform/"]
-  insteadOf = relay:
-
 [core]
   pager = delta
   trustctime = false
@@ -229,7 +227,7 @@ EOF
 
 if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
   fancy_echo "Generating SSH key..."
-  ssh-keygen -t ed25519 -C "Relay Platform - ${USER}" -N "" -f "$HOME/.ssh/id_ed25519"
+  ssh-keygen -t ed25519 -C "${USER}" -N "" -f "$HOME/.ssh/id_ed25519"
   pbcopy < "$HOME/.ssh/id_ed25519.pub"
   fancy_echo "SSH key copied to clipboard. Press enter to open Github so you can add the new key."
   read -r
@@ -497,48 +495,6 @@ function set_private_env_var() {
   fi
  }
 
-if confirm_action "Do you want to setup the Relay Development environment?" relay; then
-  eval "$(direnv hook bash)"
-  mkdir -p ~/dev/relay
-  cd ~/dev/relay
-
-  REPOS=(
-    "api"
-    "web"
-    "portal"
-    "docgen"
-    "rainbow-dash"
-    "handbook"
-  )
-
-  for repo in "${REPOS[@]}"; do
-    if [ ! -d "$repo" ]; then
-      fancy_echo "Cloning ${repo} ..."
-      git clone "git@github.com:relayplatform/${repo}"
-    fi
-    pushd "${repo}"
-    asdf install
-    grep -Fqsx '.envrc-private:' Makefile && make .envrc-private
-    if [ -f .envrc-private ]; then
-      source .envrc-private
-    fi
-    [ -f ".envrc" ] && direnv allow
-    popd
-  done
-
-  fancy_echo "\nSetting up API"
-  cd api
-  fancy_echo "Installing the bundle ..."
-  bundle install
-  mkcert -install
-  mkdir -p config/ssl
-  rake ssl:setup
-
-  fancy_echo "\nSetting up Web"
-  cd ../web
-  yarn install
-fi
-
 if confirm_action "Do you want to setup AWS credentials?" aws; then
   if [ ! -x "$(command -v aws)" ]; then
     fancy_echo "Installing AWS CLI"
@@ -549,20 +505,6 @@ if confirm_action "Do you want to setup AWS credentials?" aws; then
   aws configure
 fi
 
-if confirm_action "Do you want to setup the Relay SSH config?" ssh; then
-  if [ ! -d "$HOME/dev/relay/api" ]; then
-    echo "The Relay development environment is not setup. Please run the Relay setup first."
-  else
-    cd "$HOME/dev/relay/api"
-    bin/generate-relay-ssh-config > ~/.ssh/config-relay-api
-    if [ -f "$HOME/.ssh/config" ]; then
-      printf '%s\n%s\n' "Include ~/.ssh/config-relay-api" "$(cat ~/.ssh/config)" > ~/.ssh/config
-    else
-      echo "Include ~/.ssh/config-relay-api" > ~/.ssh/config
-    fi
-  fi
-fi
-
 if confirm_action "Do you want to setup your /etc/hosts file?" hosts; then
   fancy_echo "Setting up your hosts file"
   function add_to_hosts() {
@@ -571,12 +513,7 @@ if confirm_action "Do you want to setup your /etc/hosts file?" hosts; then
   }
 
   touch /tmp/laptop-hosts
-  add_to_hosts "relay.test"
-  add_to_hosts "broker.relay.test"
-  add_to_hosts "insurer.relay.test"
-  add_to_hosts "retailer.relay.test"
-  add_to_hosts "wholesaler.relay.test"
-  add_to_hosts "appund.relay.test"
+  add_to_hosts "dev.test"
   sudo tee -a /etc/hosts < /tmp/laptop-hosts
   rm /tmp/laptop-hosts
 fi
@@ -625,18 +562,18 @@ echo_if_section "asdf" $(cat <<'EOM'
 - Installed ASDF and set it up with useful plugins and languages including Ruby, Node, Python and Go.
 EOM
 )
-echo_if_section "asdf" $(cat <<'EOM'
-- Installed ASDF and set it up with useful plugins and languages including Ruby, Node, Python and Go.
-EOM
-)
-echo_if_section "relay" $(cat <<'EOM'
-- Set up the Relay Development environment at ~/dev/relay.
-- Checked out the api, web, portal, docgen, and handbook repos. You can clone others with `git clone relay:<repo>`.
-- Installed the right versions of each language for each repo.
-- Set up .envrc-private files with the values you provided.
-- Installed the bundle for the api and the node modules for the web.
-EOM
-)
+# echo_if_section "asdf" $(cat <<'EOM'
+# - Installed ASDF and set it up with useful plugins and languages including Ruby, Node, Python and Go.
+# EOM
+# )
+# echo_if_section "relay" $(cat <<'EOM'
+# - Set up the Relay Development environment at ~/dev/relay.
+# - Checked out the api, web, portal, docgen, and handbook repos. You can clone others with `git clone relay:<repo>`.
+# - Installed the right versions of each language for each repo.
+# - Set up .envrc-private files with the values you provided.
+# - Installed the bundle for the api and the node modules for the web.
+# EOM
+# )
 echo_if_section "hosts" $(cat <<'EOM'
 - Added relay.test and several subdomains to your /etc/hosts file as aliases for localhost.
 EOM
@@ -646,23 +583,11 @@ echo_if_section "aws" $(cat <<'EOM'
 EOM
 )
 echo_if_section "ssh" $(cat <<'EOM'
-- Setup Relay SSH config
+- Setup SSH config
 EOM
 )
 
 cat <<'EOM'
 
-To get started with the Relay app there are a few steps left for you to do:
-
-In the api repo:
-1. Bring up the database and other services with `docker-compose up -d`
-2. Set up your DB with `rails db:setup`
-3. Start the server with `rails s` - leave this running
-4. Run the jobs with `rails jobs:work` - you'll need another terminal for this
-
-In the web repo:
-1. Start the server with `yarn start` - leave this running
-2. Open the app at https://relay.test:3333.
-
-If you have other questions, take a look in the handbook, or come ask in #no-bad-eng-questions in Slack.
+Happy coding! 🚀
 EOM
