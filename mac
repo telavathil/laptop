@@ -267,12 +267,11 @@ if confirm_action "Do you want to setup Homebrew and install useful apps?" brew;
     fancy_echo "Homebrew installed!"
     fancy_echo "Adding Homebrew to your PATH ..."
     if [ ! -f "$HOME/.zshrc" ]; then
-      append_to_zshrc 'eval "$(HOMEBREW_PREFIX/bin/brew shellenv)"'
+      append_to_zshrc 'eval "$(/opt/homebrew/bin/brew shellenv)"'
     else
-      (echo; echo 'eval "$(HOMEBREW_PREFIX/bin/brew shellenv)"') >> $HOME/.zprofile
-      eval "$(HOMEBREW_PREFIX/bin/brew shellenv)"
-
+      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
     fi
+      eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 
   if brew list | grep -Fq brew-cask; then
@@ -463,7 +462,6 @@ if confirm_action "Do you want to setup ASDF and install default versions of too
   install_asdf_language "python" $latest_py
   install_asdf_language "python" 3.10.7
   asdf global python $latest_py 3.10.7
-
   fancy_echo "Installing latest Node ..."
   install_asdf_language "nodejs"
 
