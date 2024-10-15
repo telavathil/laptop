@@ -282,7 +282,7 @@ if confirm_action "Do you want to setup Homebrew and install useful apps?" brew;
   fancy_echo "Updating Homebrew formulae ..."
   brew update --force # https://github.com/Homebrew/brew/issues/1151
   brew bundle --file=- <<EOF
-tap "homebrew/cask-fonts"
+# tap "homebrew/cask-fonts"
 tap "hashicorp/tap"
 
 # Unix
@@ -291,7 +291,9 @@ brew "bat"
 brew "curl"
 brew "direnv"
 brew "dust"
-brew "exa"
+brew "eza"
+brew "chezmoi"
+brew "antigen"
 brew "fd"
 brew "fzf"
 brew "gettext"
@@ -336,6 +338,8 @@ brew "imagemagick"
 
 # Fonts
 cask "font-inconsolata-nerd-font"
+cask "font-fira-code"
+cask "font-source-code-pro"
 
 # Infra related tooling
 brew "transcrypt"
